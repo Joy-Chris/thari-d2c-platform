@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="main-container" style="max-width: 860px;">
+  <div style="text-align: center; margin-bottom: 2.5rem;">
+    <div class="badge-gi" style="margin-bottom: 0.75rem;">Weaver Empowerment Portal</div>
+    <h1 style="font-size: 2.5rem; color: var(--color-indigo); margin-bottom: 0.5rem;">Artisan & Cooperative Registration</h1>
+    <p style="color: var(--color-text-muted); font-size: 1rem; max-width: 650px; margin: 0 auto;">
+      Join Thari's verified network of handloom master weavers. Sell directly to global conscious consumers, retain 75–85% of retail price, and gain GI/Handloom authenticity support.
+    </p>
+  </div>
+
+  <div style="background: var(--color-silk-card); border: 1px solid var(--color-silk-border); border-radius: var(--radius-lg); padding: 2.5rem; box-shadow: var(--shadow-md);">
+    <form id="artisanRegForm" onsubmit="handleArtisanRegister(event)">
+      
+      <h3 style="font-size: 1.25rem; color: var(--color-indigo); margin-bottom: 1.25rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--color-silk-border);">
+        1. Weaver & Cooperative Identity
+      </h3>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Master Weaver / Contact Person Name *</label>
+          <input type="text" id="regFullName" class="form-control" placeholder="e.g. Ramakrishnaiah Padmashali" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Cluster / Society / Guild Name *</label>
+          <input type="text" id="regClusterName" class="form-control" placeholder="e.g. Koyalagudem Weavers Cooperative" required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Contact Email (for Escrow Settlements) *</label>
+          <input type="email" id="regEmail" class="form-control" placeholder="weaver.society@example.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Mobile / WhatsApp Number *</label>
+          <input type="tel" id="regPhone" class="form-control" placeholder="+91 98480 12345" required>
+        </div>
+      </div>
+
+      <h3 style="font-size: 1.25rem; color: var(--color-indigo); margin: 2rem 0 1.25rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--color-silk-border);">
+        2. Loom Craft & Geographic Provenance
+      </h3>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Craft Tradition *</label>
+          <input type="text" id="regCraftTradition" class="form-control" placeholder="e.g. Pochampally Telia Rumal / Ikat" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Handloom Mechanism Type *</label>
+          <input type="text" id="regLoomType" class="form-control" placeholder="e.g. Traditional Pit Loom with Jala / Dobby" required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Village / Town *</label>
+          <input type="text" id="regVillage" class="form-control" placeholder="e.g. Koyalagudem" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">District *</label>
+          <input type="text" id="regDistrict" class="form-control" placeholder="e.g. Yadadri Bhuvanagiri" required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">State *</label>
+          <input type="text" id="regState" class="form-control" placeholder="e.g. Telangana" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Years of Traditional Weaving Experience *</label>
+          <input type="number" id="regExperienceYears" class="form-control" min="1" max="75" value="20" required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Active Handlooms in Workshop *</label>
+          <input type="number" id="regActiveLooms" class="form-control" min="1" max="50" value="3" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Direct Fair-Trade Payout Share (%) *</label>
+          <input type="number" id="regSharePercent" class="form-control" min="70" max="95" step="0.5" value="82.0" required>
+          <small style="color: var(--color-temple-green); font-size: 0.78rem;">Guaranteed % disbursed directly to weaver (Platform minimum: 75%).</small>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Weaver Lineage & Craft Narrative *</label>
+        <textarea id="regBio" class="form-control" rows="4" placeholder="Tell conscious buyers about your craft ancestry, unique motifs, dyeing methods, and loom heritage..." required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Certifications & Accreditations (Comma separated)</label>
+        <input type="text" id="regCertifications" class="form-control" placeholder="e.g. GI Tag Registered, Handloom Mark, Craftmark India, State Merit Award">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Artisan Portrait Photo URL</label>
+          <input type="url" id="regAvatarUrl" class="form-control" placeholder="https://images.unsplash.com/...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Loom / Workshop Photo URL</label>
+          <input type="url" id="regHeroImageUrl" class="form-control" placeholder="https://images.unsplash.com/...">
+        </div>
+      </div>
+
+      <div style="margin-top: 2rem;">
+        <button type="submit" id="regSubmitBtn" class="btn btn-primary" style="width: 100%; padding: 0.85rem; font-size: 1rem;">
+          Register Artisan & Verify Loom Authenticity →
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+async function handleArtisanRegister(e) {
+  e.preventDefault();
+  const btn = document.getElementById('regSubmitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Registering Weavers Guild...';
+
+  const certsRaw = document.getElementById('regCertifications').value.trim();
+  const certs = certsRaw ? certsRaw.split(',').map(s => s.trim()).filter(Boolean) : ["Handloom Mark Registered", "Authentic Loom Verified"];
+
+  const payload = {
+    full_name: document.getElementById('regFullName').value.trim(),
+    cluster_name: document.getElementById('regClusterName').value.trim(),
+    craft_tradition: document.getElementById('regCraftTradition').value.trim(),
+    loom_type: document.getElementById('regLoomType').value.trim(),
+    village: document.getElementById('regVillage').value.trim(),
+    district: document.getElementById('regDistrict').value.trim(),
+    state: document.getElementById('regState').value.trim(),
+    experience_years: parseInt(document.getElementById('regExperienceYears').value),
+    active_looms: parseInt(document.getElementById('regActiveLooms').value),
+    fair_trade_share_percent: parseFloat(document.getElementById('regSharePercent').value),
+    bio: document.getElementById('regBio').value.trim(),
+    phone: document.getElementById('regPhone').value.trim(),
+    email: document.getElementById('regEmail').value.trim(),
+    certifications: certs,
+    avatar_url: document.getElementById('regAvatarUrl').value.trim() || 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=600&q=80',
+    hero_image_url: document.getElementById('regHeroImageUrl').value.trim() || 'https://images.unsplash.com/photo-1607344645866-009c320b5ab8?auto=format&fit=crop&w=1200&q=80'
+  };
+
+  try {
+    const resp = await fetch('/api/v1/artisans/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (!resp.ok) {
+      const err = await resp.json();
+      throw new Error(err.detail || 'Registration failed');
+    }
+
+    const created = await resp.json();
+    alert(`Success! Master weaver "${created.full_name}" registered successfully. You can now upload handloom creations!`);
+    window.location.href = '/upload-product';
+  } catch (err) {
+    alert(err.message);
+    btn.disabled = false;
+    btn.textContent = 'Register Artisan & Verify Loom Authenticity →';
+  }
+}
+</script>
+{% endblock %}

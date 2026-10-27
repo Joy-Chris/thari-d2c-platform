@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="hero-overlay-motif"></div>
+  <div class="hero-content">
+    <div>
+      <div class="hero-pill">
+        <span>🧵 Direct-to-Consumer Handloom Marketplace</span>
+      </div>
+      <h1 class="hero-title">
+        Woven by <span>Hand</span>,<br>Delivered from the <span>Heart</span>.
+      </h1>
+      <p class="hero-desc">
+        Thari bridges India's master weavers directly with conscious patrons. Bypassing commercial middlemen, every piece is authenticated with GI tags and handloom marks, ensuring up to 85% of each rupee reaches the weaver's home.
+      </p>
+      <div class="hero-cta-group">
+        <a href="#storefront" class="btn btn-primary">
+          Explore Authentic Weaves ↓
+        </a>
+        <a href="/register-artisan" class="btn btn-secondary">
+          Register as Weaver / Cluster
+        </a>
+        <a href="/transparency" class="btn btn-secondary" style="border-color: rgba(255,255,255,0.3); background: transparent; color: #fff;">
+          See Fair-Trade Economics
+        </a>
+      </div>
+    </div>
+
+    <!-- Live Heritage Impact Card -->
+    <div class="hero-metrics-card">
+      <div style="font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-gold-light); margin-bottom: 1.25rem; font-weight: 700;">
+        Direct Weaver Impact Metrics
+      </div>
+      <div class="metric-grid">
+        <div class="metric-item">
+          <div class="metric-num">₹{{ "{:,.0f}".format(stats.total_artisan_earnings_inr) }}</div>
+          <div class="metric-label">Direct Weaver Payouts</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-num">{{ stats.average_fair_share_percent }}%</div>
+          <div class="metric-label">Avg. Weaver Price Share</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-num">{{ stats.active_looms_count }}</div>
+          <div class="metric-label">Active Looms Powered</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-num">{{ stats.craft_clusters_count }}</div>
+          <div class="metric-label">Heritage Clusters</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Provenance Strip -->
+<div class="provenance-strip">
+  <div class="provenance-strip-inner">
+    <span style="font-size: 0.78rem; text-transform: uppercase; font-weight: 700; color: var(--color-terracotta); letter-spacing: 0.08em;">
+      Heritage Provenance:
+    </span>
+    <a href="/?craft=Chanderi" class="provenance-tag">✨ Chanderi, MP</a>
+    <a href="/?craft=Kanchipuram" class="provenance-tag">🏛 Kanchipuram Korvai, TN</a>
+    <a href="/?craft=Pochampally" class="provenance-tag">🔷 Pochampally Double Ikat, TS</a>
+    <a href="/?craft=Jamdani" class="provenance-tag">🍃 Phulia Jamdani Muslin, WB</a>
+    <a href="/?craft=Sambalpuri" class="provenance-tag">🐚 Sambalpuri Bandha, OD</a>
+    <a href="/?craft=Maheshwari" class="provenance-tag">🌊 Maheshwari Reversible, MP</a>
+  </div>
+</div>
+
+<!-- Main Storefront Section -->
+<section id="storefront" class="main-container">
+  
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <h2 style="font-size: 2.2rem; color: var(--color-indigo); margin-bottom: 0.35rem;">Conscious Handloom Catalog</h2>
+      <p style="color: var(--color-text-muted); font-size: 0.95rem;">
+        Direct from pit looms, frame looms, and weaver collectives across India.
+      </p>
+    </div>
+    <div style="font-size: 0.88rem; color: var(--color-text-muted);">
+      Showing <strong style="color: var(--color-indigo);">{{ products | length }}</strong> authenticated handwoven pieces
+    </div>
+  </div>
+
+  <!-- Interactive Filter Bar -->
+  <div class="filter-bar">
+    <form id="filterForm" method="GET" action="/" class="filter-row">
+      <div class="search-input-wrap">
+        <span class="search-icon">🔍</span>
+        <input 
+          type="text" 
+          name="search" 
+          class="search-input" 
+          placeholder="Search weaves, techniques, yarns, or artisans..."
+          value="{{ request.query_params.get('search', '') }}"
+        >
+      </div>
+
+      <div class="filter-selects">
+        <select name="craft" class="filter-select" onchange="this.form.submit()">
+          <option value="">All Craft Traditions</option>
+          {% for ct in categories.craft_traditions %}
+            <option value="{{ ct.name }}" {% if request.query_params.get('craft') == ct.name %}selected{% endif %}>
+              {{ ct.name }}
+            </option>
+          {% endfor %}
+        </select>
+
+        <select name="category" class="filter-select" onchange="this.form.submit()">
+          <option value="">All Categories</option>
+          {% for cat in categories.product_categories %}
+            <option value="{{ cat }}" {% if request.query_params.get('category') == cat %}selected{% endif %}>
+              {{ cat }}
+            </option>
+          {% endfor %}
+        </select>
+
+        <select name="sort" class="filter-select" onchange="this.form.submit()">
+          <option value="">Sort: Featured First</option>
+          <option value="price_asc" {% if request.query_params.get('sort') == 'price_asc' %}selected{% endif %}>Price: Low to High</option>
+          <option value="price_desc" {% if request.query_params.get('sort') == 'price_desc' %}selected{% endif %}>Price: High to Low</option>
+          <option value="loom_days" {% if request.query_params.get('sort') == 'loom_days' %}selected{% endif %}>Most Loom Days</option>
+          <option value="newest" {% if request.query_params.get('sort') == 'newest' %}selected{% endif %}>Newest Creations</option>
+        </select>
+
+        {% if request.query_params %}
+          <a href="/" class="btn btn-secondary btn-sm" style="height: 38px; display: inline-flex; align-items: center;">
+            ✕ Reset
+          </a>
+        {% endif %}
+      </div>
+    </form>
+  </div>
+
+  <!-- Products Grid -->
+  {% if products %}
+    <div class="products-grid">
+      {% for product in products %}
+        <article class="product-card" id="card-{{ product.id }}">
+          <div class="card-img-wrap">
+            <img 
+              src="{{ product.images[0] if product.images else 'https://images.unsplash.com/photo-1610030469983-98e550d6193c' }}" 
+              alt="{{ product.title }}" 
+              class="card-img"
+              loading="lazy"
+            >
+            <div class="card-badges-top">
+              <span class="badge-loom-days">⏱ {{ product.loom_days }} Loom Days</span>
+              {% if product.gi_tag_certified %}
+                <span class="badge-gi">GI Tag Verified</span>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="card-craft-label">{{ product.craft_tradition }}</div>
+            <h3 class="card-title" title="{{ product.title }}">{{ product.title }}</h3>
+
+            <!-- Artisan Info Strip -->
+            {% if product.artisan %}
+              <div class="card-artisan-strip">
+                <img 
+                  src="{{ product.artisan.avatar_url or 'https://images.unsplash.com/photo-1544005313-94ddf0286df2' }}" 
+                  alt="{{ product.artisan.full_name }}" 
+                  class="artisan-avatar-sm"
+                >
+                <div class="artisan-meta-text">
+                  <span class="artisan-name-bold">{{ product.artisan.full_name }}</span>
+                  <span>{{ product.artisan.cluster_name }} ({{ product.artisan.state }})</span>
+                </div>
+              </div>
+            {% endif %}
+
+            <div class="card-specs-row">
+              <span style="font-size: 0.78rem; background: var(--color-silk-bg); padding: 0.15rem 0.5rem; border-radius: 4px; border: 1px solid var(--color-silk-border);">
+                {{ product.material }}
+              </span>
+              <span style="font-size: 0.78rem; background: var(--color-silk-bg); padding: 0.15rem 0.5rem; border-radius: 4px; border: 1px solid var(--color-silk-border);">
+                {{ product.color }}
+              </span>
+            </div>
+
+            <p style="font-size: 0.84rem; color: var(--color-text-muted); line-height: 1.45; margin-bottom: 1rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+              {{ product.short_description }}
+            </p>
+
+            <div class="card-price-row">
+              <div class="price-box">
+                <div class="price-currency">₹{{ "{:,.0f}".format(product.price_inr) }}</div>
+                {% if product.transparent_pricing %}
+                  <div class="artisan-cut-note">
+                    ♥ ₹{{ "{:,.0f}".format(product.transparent_pricing.artisan_wages) }} direct to weaver
+                  </div>
+                {% endif %}
+              </div>
+
+              <div style="display: flex; gap: 0.4rem;">
+                <button 
+                  class="btn btn-secondary btn-sm" 
+                  onclick="ThariApp.openProductModal('{{ product.id }}')"
+                  title="View Craft Story & Transparent Pricing"
+                >
+                  Story & Details
+                </button>
+                <button 
+                  class="btn btn-primary btn-sm" 
+                  onclick='ThariApp.addToCart({{ product | tojson }}, 1)'
+                  title="Add to Handloom Basket"
+                >
+                  + Basket
+                </button>
+              </div>
+            </div>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div style="text-align: center; padding: 4rem 1rem; background: var(--color-silk-card); border-radius: var(--radius-lg); border: 1px solid var(--color-silk-border);">
+      <div style="font-size: 3rem; margin-bottom: 0.5rem;">🔍</div>
+      <h3 style="font-family: var(--font-serif); font-size: 1.4rem; color: var(--color-indigo); margin-bottom: 0.5rem;">No handloom textiles matched your filter</h3>
+      <p style="color: var(--color-text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Try relaxing your search terms or clearing selected craft filters.</p>
+      <a href="/" class="btn btn-secondary">Clear All Filters</a>
+    </div>
+  {% endif %}
+
+</section>
+{% endblock %}

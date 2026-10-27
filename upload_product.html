@@ -1,0 +1,247 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="main-container" style="max-width: 860px;">
+  <div style="text-align: center; margin-bottom: 2.5rem;">
+    <div class="badge-gi" style="margin-bottom: 0.75rem;">Loom Cataloging</div>
+    <h1 style="font-size: 2.5rem; color: var(--color-indigo); margin-bottom: 0.5rem;">Upload Handloom Creation</h1>
+    <p style="color: var(--color-text-muted); font-size: 1rem; max-width: 650px; margin: 0 auto;">
+      List your genuine handloom creation directly on the Thari consumer storefront. Provide technical weave details, loom days, and transparent fair-trade economics.
+    </p>
+  </div>
+
+  <div style="background: var(--color-silk-card); border: 1px solid var(--color-silk-border); border-radius: var(--radius-lg); padding: 2.5rem; box-shadow: var(--shadow-md);">
+    <form id="uploadProductForm" onsubmit="handleProductUpload(event)">
+      
+      <h3 style="font-size: 1.25rem; color: var(--color-indigo); margin-bottom: 1.25rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--color-silk-border);">
+        1. Artisan & Basic Details
+      </h3>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Select Registered Weaver / Guild *</label>
+          <select id="prodArtisanId" class="form-control" required>
+            <option value="">-- Choose Artisan --</option>
+            {% for a in artisans %}
+              <option value="{{ a.id }}">{{ a.full_name }} — {{ a.cluster_name }} ({{ a.state }})</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Category *</label>
+          <select id="prodCategory" class="form-control" required>
+            {% for cat in categories.product_categories %}
+              <option value="{{ cat }}">{{ cat }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Textile Title *</label>
+        <input type="text" id="prodTitle" class="form-control" placeholder="e.g. Royal Indigo Pochampally Telia Rumal Double Ikat Saree" required>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Craft Tradition *</label>
+          <input type="text" id="prodCraftTradition" class="form-control" placeholder="e.g. Pochampally Double Ikat" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Loom Days Required (Hand Labor) *</label>
+          <input type="number" id="prodLoomDays" class="form-control" min="1" max="180" value="12" required>
+        </div>
+      </div>
+
+      <h3 style="font-size: 1.25rem; color: var(--color-indigo); margin: 2rem 0 1.25rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--color-silk-border);">
+        2. Technical Weave & Material Specifications
+      </h3>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Material / Fiber Composition *</label>
+          <input type="text" id="prodMaterial" class="form-control" placeholder="e.g. 100% Pure Mulberry Silk (3-ply)" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Dimensions *</label>
+          <input type="text" id="prodDimensions" class="form-control" placeholder="e.g. 6.3m x 1.15m (includes blouse piece)" required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Warp Yarn Spec</label>
+          <input type="text" id="prodWarpYarn" class="form-control" placeholder="e.g. 20/22D Degummed Silk">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Weft Yarn Spec</label>
+          <input type="text" id="prodWeftYarn" class="form-control" placeholder="e.g. Combed Cotton 100s or Pure Zari">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Color Palette *</label>
+          <input type="text" id="prodColor" class="form-control" placeholder="e.g. Deep Indigo Blue & Turmeric Yellow" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Dyeing Technique</label>
+          <input type="text" id="prodDyeType" class="form-control" placeholder="e.g. Natural Herbal Indigo Vats & Acacia Catechu">
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 2rem; margin: 1rem 0 1.5rem; flex-wrap: wrap;">
+        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.9rem;">
+          <input type="checkbox" id="prodGiTag" checked style="accent-color: var(--color-terracotta); width: 18px; height: 18px;">
+          <strong>GI Tag Certified Origin</strong>
+        </label>
+        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.9rem;">
+          <input type="checkbox" id="prodHandloomMark" checked style="accent-color: var(--color-terracotta); width: 18px; height: 18px;">
+          <strong>Handloom Mark Authenticated</strong>
+        </label>
+      </div>
+
+      <h3 style="font-size: 1.25rem; color: var(--color-indigo); margin: 2rem 0 1.25rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--color-silk-border);">
+        3. Pricing & Inventory
+      </h3>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Retail Price in INR (₹) *</label>
+          <input type="number" id="prodPrice" class="form-control" min="100" step="50" value="14500" oninput="updatePricingPreview()" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Pieces in Ready Stock *</label>
+          <input type="number" id="prodInventory" class="form-control" min="1" max="100" value="2" required>
+        </div>
+      </div>
+
+      <!-- Pricing Preview Box -->
+      <div id="pricingPreviewBox" class="pricing-breakdown-box" style="margin-bottom: 1.5rem;">
+        <strong style="color: var(--color-indigo); font-size: 0.88rem;">Automated Fair-Trade Payout Breakdown Preview:</strong>
+        <div style="font-size: 0.82rem; color: var(--color-temple-green); font-weight: 600; margin-top: 0.35rem;" id="previewWagesText">
+          Weaver Direct Wages: ₹11,890 (82%)
+        </div>
+        <div style="font-size: 0.78rem; color: var(--color-text-muted); margin-top: 0.2rem;">
+          Silk/Cotton/Zari Cost: ~₹1,740 • Packaging: ₹250 • Platform & Escrow: ₹620
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Brief Summary (Storefront Card) *</label>
+        <input type="text" id="prodShortDesc" class="form-control" placeholder="1-2 sentences capturing the essence of the weave..." required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Cultural Story & Motif Narrative *</label>
+        <textarea id="prodStory" class="form-control" rows="4" placeholder="Detail the symbolism behind the motifs, mythological references, family lineage, and hours of hand work..." required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">High-Resolution Image URLs (comma-separated)</label>
+        <input type="text" id="prodImages" class="form-control" placeholder="https://images.unsplash.com/..., https://images.unsplash.com/...">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Care Instructions</label>
+          <input type="text" id="prodCare" class="form-control" placeholder="e.g. Dry clean recommended or cold handwash with soapnut">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Origin Cluster</label>
+          <input type="text" id="prodOrigin" class="form-control" placeholder="e.g. Pochampally, Telangana">
+        </div>
+      </div>
+
+      <div style="margin-top: 2rem;">
+        <button type="submit" id="uploadSubmitBtn" class="btn btn-primary" style="width: 100%; padding: 0.85rem; font-size: 1rem;">
+          Publish Creation to Consumer Storefront →
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function updatePricingPreview() {
+  const price = parseFloat(document.getElementById('prodPrice').value) || 0;
+  const wages = Math.round(price * 0.82);
+  const yarn = Math.round(price * 0.12);
+  const finishing = 250;
+  const ops = Math.max(price - (wages + yarn + finishing), 0);
+  
+  document.getElementById('previewWagesText').textContent = 
+    `Weaver Direct Wages: ₹${wages.toLocaleString('en-IN')} (82% Guaranteed)`;
+}
+
+async function handleProductUpload(e) {
+  e.preventDefault();
+  const btn = document.getElementById('uploadSubmitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Publishing Creation to Storefront...';
+
+  const imagesRaw = document.getElementById('prodImages').value.trim();
+  const images = imagesRaw ? imagesRaw.split(',').map(s => s.trim()).filter(Boolean) : [
+    'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1000&q=80',
+    'https://images.unsplash.com/photo-1607344645866-009c320b5ab8?auto=format&fit=crop&w=1000&q=80'
+  ];
+
+  const price = parseFloat(document.getElementById('prodPrice').value);
+  const wages = Math.round(price * 0.82);
+  const yarn = Math.round(price * 0.12);
+  const finishing = 250;
+  const ops = Math.round(price - (wages + yarn + finishing));
+
+  const payload = {
+    title: document.getElementById('prodTitle').value.trim(),
+    artisan_id: document.getElementById('prodArtisanId').value,
+    category: document.getElementById('prodCategory').value,
+    craft_tradition: document.getElementById('prodCraftTradition').value.trim(),
+    loom_days: parseInt(document.getElementById('prodLoomDays').value),
+    material: document.getElementById('prodMaterial').value.trim(),
+    warp_yarn: document.getElementById('prodWarpYarn').value.trim() || 'Pure Silk 20/22D',
+    weft_yarn: document.getElementById('prodWeftYarn').value.trim() || 'Combed Cotton 100s',
+    dimensions: document.getElementById('prodDimensions').value.trim(),
+    color: document.getElementById('prodColor').value.trim(),
+    dye_type: document.getElementById('prodDyeType').value.trim() || 'Natural Eco Dyes',
+    gi_tag_certified: document.getElementById('prodGiTag').checked,
+    handloom_mark: document.getElementById('prodHandloomMark').checked,
+    price_inr: price,
+    inventory_count: parseInt(document.getElementById('prodInventory').value),
+    short_description: document.getElementById('prodShortDesc').value.trim(),
+    detailed_story: document.getElementById('prodStory').value.trim(),
+    transparent_pricing: {
+      artisan_wages: wages,
+      raw_material_silk_zari: yarn,
+      finishing_packaging: finishing,
+      platform_fair_trade_ops: ops > 0 ? ops : 350
+    },
+    images: images,
+    is_featured: true,
+    care_instructions: document.getElementById('prodCare').value.trim() || 'Dry clean recommended.',
+    origin_cluster: document.getElementById('prodOrigin').value.trim() || 'India'
+  };
+
+  try {
+    const resp = await fetch('/api/v1/products', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (!resp.ok) {
+      const err = await resp.json();
+      throw new Error(err.detail || 'Upload failed');
+    }
+
+    const created = await resp.json();
+    alert(`Success! "${created.title}" is now live on the Thari storefront.`);
+    window.location.href = '/';
+  } catch (err) {
+    alert(err.message);
+    btn.disabled = false;
+    btn.textContent = 'Publish Creation to Consumer Storefront →';
+  }
+}
+</script>
+{% endblock %}

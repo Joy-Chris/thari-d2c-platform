@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title | default('Thari | Handloom Weavers D2C Platform') }}</title>
+  
+  <!-- Google Fonts: Playfair Display & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Custom Handloom Stylesheet -->
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧵</text></svg>">
+</head>
+<body class="handloom-texture">
+
+  <!-- Header Navigation -->
+  <header class="header-nav">
+    <div class="nav-container">
+      <a href="/" class="brand-link">
+        <div class="brand-symbol">थ</div>
+        <div>
+          <span class="brand-name">THARI</span>
+          <span class="brand-tagline">Direct Handloom Provenance</span>
+        </div>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="/" class="nav-link {% if current_tab == 'storefront' %}active{% endif %}">Storefront</a></li>
+        <li><a href="/artisans-view" class="nav-link {% if current_tab == 'artisans' %}active{% endif %}">Master Weavers</a></li>
+        <li><a href="/transparency" class="nav-link {% if current_tab == 'transparency' %}active{% endif %}">Fair-Trade Economics</a></li>
+        <li><a href="/orders-view" class="nav-link {% if current_tab == 'orders' %}active{% endif %}">Orders & Escrow</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="/register-artisan" class="btn btn-secondary btn-sm" style="display: inline-flex;">
+          🌾 Weavers Portal
+        </a>
+        <a href="/upload-product" class="btn btn-primary btn-sm" style="display: inline-flex;">
+          + List Creation
+        </a>
+        <button class="btn btn-secondary btn-sm" data-action="open-cart" style="position: relative;">
+          🧺 Basket
+          <span class="cart-badge-count" style="display: none; position: absolute; top: -6px; right: -6px; background: var(--color-terracotta); color: #fff; font-size: 0.7rem; font-weight: 700; width: 18px; height: 18px; border-radius: 50%; align-items: center; justify-content: center;">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Block -->
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Cart Drawer -->
+  <div id="cartDrawerBackdrop" class="cart-drawer-backdrop">
+    <div class="cart-drawer">
+      <div class="cart-drawer-header">
+        <h3 style="font-family: var(--font-serif); font-size: 1.25rem; color: var(--color-indigo);">Your Handloom Basket</h3>
+        <button id="closeCartBtn" style="background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--color-text-muted);">&times;</button>
+      </div>
+      <div id="cartItemsList" class="cart-drawer-body">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+      <div class="cart-drawer-footer">
+        <div style="background: var(--color-temple-green-light); border: 1px solid #C0DEC8; border-radius: var(--radius-sm); padding: 0.75rem; margin-bottom: 1rem; font-size: 0.8rem; color: var(--color-temple-green);">
+          <strong>Direct Artisan Impact:</strong> <span id="cartDrawerArtisanPayout">₹0</span> directly remitted to master weavers.
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <span style="font-size: 0.95rem; color: var(--color-text-muted);">Total (Free Direct Shipping):</span>
+          <span id="cartDrawerTotal" style="font-family: var(--font-serif); font-size: 1.4rem; font-weight: 700; color: var(--color-indigo);">₹0</span>
+        </div>
+        <button id="cartCheckoutBtn" class="btn btn-primary" style="width: 100%;" onclick="ThariApp.openCheckoutModal()">
+          Proceed to Fair-Trade Checkout →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Detail Modal -->
+  <div id="productDetailModal" class="modal-backdrop">
+    <div class="modal-window">
+      <button class="modal-close-btn">&times;</button>
+      <div id="productModalContent">
+        <!-- Populated via API fetch in app.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Direct Weaver Inquiry Modal -->
+  <div id="inquiryModal" class="modal-backdrop">
+    <div class="modal-window" style="max-width: 550px;">
+      <button class="modal-close-btn">&times;</button>
+      <div style="padding: 2rem;">
+        <h3 id="inquiryArtisanTitle" style="font-family: var(--font-serif); font-size: 1.4rem; color: var(--color-indigo); margin-bottom: 0.5rem;">Direct Message to Weaver</h3>
+        <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 1.5rem;">
+          Direct communication eliminates middlemen. Inquire about customized colorways, sizing, or loom completion dates.
+        </p>
+
+        <form onsubmit="ThariApp.submitInquiry(event)">
+          <input type="hidden" id="inquiryArtisanId">
+          <input type="hidden" id="inquiryProductId">
+          
+          <div class="form-group">
+            <label class="form-label">Your Full Name</label>
+            <input type="text" id="inquiryCustomerName" class="form-control" placeholder="e.g. Radhika Menon" required>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <input type="email" id="inquiryCustomerEmail" class="form-control" placeholder="radhika@example.com" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">WhatsApp / Phone</label>
+              <input type="tel" id="inquiryCustomerPhone" class="form-control" placeholder="+91 98765 43210">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Custom Specifications (Optional)</label>
+            <input type="text" id="inquiryDimensions" class="form-control" placeholder="e.g. Need 7 meters length, natural indigo dye">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Your Message to the Artisan</label>
+            <textarea id="inquiryMessage" class="form-control" rows="3" placeholder="Share your appreciation or bespoke requirements directly..." required></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%;">
+            Send Direct Message to Loom Cluster
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Checkout Modal -->
+  <div id="checkoutModal" class="modal-backdrop">
+    <div class="modal-window" style="max-width: 600px;">
+      <button class="modal-close-btn">&times;</button>
+      <div style="padding: 2rem;">
+        <h3 style="font-family: var(--font-serif); font-size: 1.4rem; color: var(--color-indigo); margin-bottom: 0.5rem;">Direct Handloom Escrow Checkout</h3>
+        <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 1.5rem;">
+          Your payment is held in fair-trade escrow and released directly to the artisan cooperative upon doorstep verification.
+        </p>
+
+        <div style="background: var(--color-silk-bg); border: 1px solid var(--color-silk-border); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between;">
+          <div>
+            <div style="font-size: 0.8rem; color: var(--color-text-muted);">Total Order Amount</div>
+            <div id="checkoutSubtotal" style="font-family: var(--font-serif); font-size: 1.3rem; font-weight: 700; color: var(--color-indigo);">₹0</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 0.8rem; color: var(--color-temple-green); font-weight: 600;">Direct Weaver Escrow Payout</div>
+            <div id="checkoutArtisanPayout" style="font-family: var(--font-serif); font-size: 1.3rem; font-weight: 700; color: var(--color-temple-green);">₹0</div>
+          </div>
+        </div>
+
+        <form onsubmit="ThariApp.submitOrder(event)">
+          <div class="form-group">
+            <label class="form-label">Customer Name</label>
+            <input type="text" id="orderName" class="form-control" placeholder="Aarti Sen" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input type="email" id="orderEmail" class="form-control" placeholder="aarti@example.com" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone</label>
+              <input type="tel" id="orderPhone" class="form-control" placeholder="+91 98450 12345" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Delivery Street Address</label>
+            <input type="text" id="orderStreet" class="form-control" placeholder="House 42, Heritage Enclave" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">City</label>
+              <input type="text" id="orderCity" class="form-control" placeholder="Bengaluru" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">State</label>
+              <input type="text" id="orderState" class="form-control" placeholder="Karnataka" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">PIN Code</label>
+              <input type="text" id="orderPincode" class="form-control" placeholder="560001" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Payment Method</label>
+              <select id="orderPaymentMethod" class="form-control">
+                <option value="UPI / Instant Weaver Escrow">UPI / Instant Weaver Escrow</option>
+                <option value="Credit / Debit Card (Zero Middleman)">Credit / Debit Card (Zero Middleman)</option>
+                <option value="Direct NetBanking">Direct NetBanking</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="submit" id="placeOrderBtn" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+            Confirm Order & Remit to Weavers
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Success Modal -->
+  <div id="orderSuccessModal" class="modal-backdrop">
+    <div class="modal-window" style="max-width: 500px; text-align: center;">
+      <div style="padding: 2.5rem 2rem;">
+        <div style="font-size: 3.5rem; margin-bottom: 1rem;">🪔</div>
+        <h3 style="font-family: var(--font-serif); font-size: 1.6rem; color: var(--color-indigo); margin-bottom: 0.5rem;">Order Woven with Gratitude!</h3>
+        <p style="font-size: 0.9rem; color: var(--color-text-muted); margin-bottom: 1.5rem;">
+          Your order has been transmitted directly to the weaver cluster. You have successfully bypassed retail markups and empowered traditional Indian craft heritage.
+        </p>
+
+        <div style="background: var(--color-silk-bg); border: 1px solid var(--color-silk-border); border-radius: var(--radius-md); padding: 1.25rem; text-align: left; font-size: 0.85rem; margin-bottom: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="color: var(--color-text-muted);">Order ID:</span>
+            <strong id="successOrderId" style="color: var(--color-indigo);">ORD-2026-XXXX</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="color: var(--color-text-muted);">Consignment Tracking:</span>
+            <strong id="successTracking" style="color: var(--color-terracotta);">THARI-XXXX</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="color: var(--color-text-muted);">Amount Paid:</span>
+            <strong id="successAmount" style="color: var(--color-indigo);">₹0</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; border-top: 1px dashed var(--color-silk-border); padding-top: 0.5rem; color: var(--color-temple-green);">
+            <span>Weaver Direct Payout:</span>
+            <strong id="successArtisanPayout">₹0</strong>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="ThariApp.closeAllModals(); window.location.href='/orders-view';">
+          View Consignment in Orders Tracker
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer-wrap">
+    <div class="footer-inner">
+      <div>
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+          <div class="brand-symbol" style="background: var(--color-gold); color: #122330;">थ</div>
+          <span style="font-family: var(--font-serif); font-size: 1.6rem; font-weight: 800; color: #fff;">THARI</span>
+        </div>
+        <p style="font-size: 0.88rem; line-height: 1.6; color: #B3C2CF;">
+          Thari is an ethical D2C ecosystem built to empower traditional Indian handloom weavers. By removing exploitative intermediaries, we ensure authentic provenance, fair livelihood wages, and craft preservation.
+        </p>
+      </div>
+
+      <div>
+        <h4 style="color: #fff; font-size: 0.95rem; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.05em;">Heritage Clusters</h4>
+        <ul style="list-style: none; font-size: 0.85rem; line-height: 2;">
+          <li>Chanderi, Madhya Pradesh</li>
+          <li>Kanchipuram, Tamil Nadu</li>
+          <li>Pochampally Ikat, Telangana</li>
+          <li>Jamdani Muslin, West Bengal</li>
+          <li>Sambalpuri Bandha, Odisha</li>
+          <li>Maheshwari Weaves, MP</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 style="color: #fff; font-size: 0.95rem; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.05em;">Fair Trade Trust</h4>
+        <ul style="list-style: none; font-size: 0.85rem; line-height: 2;">
+          <li>Geographical Indication (GI) Tags</li>
+          <li>Handloom Mark Verification</li>
+          <li>82% Direct Artisan Payout</li>
+          <li>Escrow Weaver Settlement</li>
+          <li>Custom Loom Commissions</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 style="color: #fff; font-size: 0.95rem; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.05em;">API & Developers</h4>
+        <ul style="list-style: none; font-size: 0.85rem; line-height: 2;">
+          <li><a href="/docs" target="_blank" style="color: #E8CF82; text-decoration: none;">Interactive Swagger API Docs</a></li>
+          <li><a href="/redoc" target="_blank" style="color: #E8CF82; text-decoration: none;">ReDoc Specification</a></li>
+          <li><a href="/api/v1/health" target="_blank" style="color: #E8CF82; text-decoration: none;">Platform Healthcheck</a></li>
+          <li><a href="/api/v1/stats" target="_blank" style="color: #E8CF82; text-decoration: none;">Live Impact Metrics API</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div>&copy; 2026 Thari Handloom D2C Initiative. Released under the MIT License.</div>
+      <div>Crafted for Weavers with FastAPI, Jinja2 & Pure CSS.</div>
+    </div>
+  </footer>
+
+  <!-- Main JS script -->
+  <script src="/static/js/app.js"></script>
+</body>
+</html>

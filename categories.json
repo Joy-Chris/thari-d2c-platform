@@ -1,0 +1,67 @@
+{
+  "craft_traditions": [
+    {
+      "id": "craft-chanderi",
+      "name": "Chanderi Weaving",
+      "region": "Madhya Pradesh",
+      "specialty": "Sheer texture, gold ashrafi zari, silk-cotton blends",
+      "loom_type": "Pit loom with Dobby / Jacquard",
+      "gi_status": "Certified GI Tag MP-007"
+    },
+    {
+      "id": "craft-kanchipuram",
+      "name": "Kanchipuram Silk & Korvai",
+      "region": "Tamil Nadu",
+      "specialty": "Heavy 3-ply mulberry silk, interlocking korvai borders, temple motifs",
+      "loom_type": "Three-shuttle pit loom",
+      "gi_status": "Certified GI Tag TN-003"
+    },
+    {
+      "id": "craft-jamdani",
+      "name": "Jamdani Muslin",
+      "region": "West Bengal",
+      "specialty": "Discontinuous supplementary weft woven with bamboo reed",
+      "loom_type": "Frame fly-shuttle loom",
+      "gi_status": "Certified GI Tag WB-014"
+    },
+    {
+      "id": "craft-pochampally",
+      "name": "Pochampally Double Ikat",
+      "region": "Telangana",
+      "specialty": "Pre-weaving resist dyeing of both warp and weft yarns, geometric chevrons",
+      "loom_type": "Pit fly-shuttle loom",
+      "gi_status": "Certified GI Tag TS-001"
+    },
+    {
+      "id": "craft-sambalpuri",
+      "name": "Sambalpuri Bandha",
+      "region": "Odisha",
+      "specialty": "Sacred motifs (conch, wheel), wild tussar silk, tie-dye resist",
+      "loom_type": "Traditional pit loom",
+      "gi_status": "Certified GI Tag OD-002"
+    },
+    {
+      "id": "craft-maheshwari",
+      "name": "Maheshwari Reversible Weave",
+      "region": "Madhya Pradesh",
+      "specialty": "Bugdi reversible borders, Narmada wave patterns, featherweight drape",
+      "loom_type": "Pit loom with dobby",
+      "gi_status": "Certified GI Tag MP-002"
+    }
+  ],
+  "materials": [
+    "100% Pure Mulberry Silk",
+    "Wild Tussar (Ahimsa) Silk",
+    "Organic Khadi Cotton (100s Count)",
+    "Silk-Cotton Chanderi Blend",
+    "Mercerized Fine Cotton",
+    "Pure Silver & Gold Zari"
+  ],
+  "product_categories": [
+    "Sarees",
+    "Dupattas & Stoles",
+    "Unstitched Fabric & Yardage",
+    "Kurtas & Menswear",
+    "Handloom Home & Living"
+  ]
+}

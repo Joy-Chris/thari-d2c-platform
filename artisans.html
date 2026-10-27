@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="main-container">
+  <div style="max-width: 800px; margin-bottom: 2.5rem;">
+    <div class="badge-gi" style="margin-bottom: 0.75rem;">Custodians of India's Looms</div>
+    <h1 style="font-size: 2.6rem; color: var(--color-indigo); margin-bottom: 0.5rem;">Master Artisans & Guilds</h1>
+    <p style="color: var(--color-text-muted); font-size: 1.05rem; line-height: 1.6;">
+      Meet the sixth and seventh-generation weaver families who bring warp and weft to life. By buying directly through Thari, you sustain endangered craft techniques and provide fair, dignified livelihoods.
+    </p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 2rem;">
+    {% for artisan in artisans %}
+      <div style="background: var(--color-silk-card); border: 1px solid var(--color-silk-border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); display: flex; flex-direction: column;">
+        <div style="height: 160px; position: relative; overflow: hidden;">
+          <img src="{{ artisan.hero_image_url }}" alt="{{ artisan.cluster_name }}" style="width: 100%; height: 100%; object-fit: cover;">
+          <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(18, 35, 48, 0.85) 0%, transparent 60%);"></div>
+          <div style="position: absolute; bottom: 1rem; left: 1rem; right: 1rem; display: flex; align-items: flex-end; justify-content: space-between;">
+            <div>
+              <span style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-gold-light); font-weight: 700;">
+                {{ artisan.village }}, {{ artisan.state }}
+              </span>
+              <h3 style="color: #fff; font-size: 1.3rem; margin-top: 2px;">{{ artisan.cluster_name }}</h3>
+            </div>
+            <span class="badge-fairshare" style="background: rgba(255, 255, 255, 0.95);">
+              ♥ {{ artisan.fair_trade_share_percent }}% Fair Payout
+            </span>
+          </div>
+        </div>
+
+        <div style="padding: 1.5rem; display: flex; flex-direction: column; flex: 1;">
+          <div style="display: flex; align-items: center; gap: 0.85rem; margin-bottom: 1rem;">
+            <img src="{{ artisan.avatar_url }}" alt="{{ artisan.full_name }}" style="width: 52px; height: 52px; border-radius: 50%; object-fit: cover; border: 2px solid var(--color-terracotta);">
+            <div>
+              <h4 style="font-family: var(--font-serif); font-size: 1.15rem; color: var(--color-indigo);">{{ artisan.full_name }}</h4>
+              <div style="font-size: 0.82rem; color: var(--color-text-muted);">
+                {{ artisan.experience_years }} Years Experience • {{ artisan.active_looms }} Active Looms
+              </div>
+            </div>
+          </div>
+
+          <div style="background: var(--color-silk-bg); padding: 0.75rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--color-silk-border); font-size: 0.82rem; margin-bottom: 1rem;">
+            <div style="color: var(--color-indigo); font-weight: 600; margin-bottom: 0.25rem;">Craft Specialization:</div>
+            <div style="color: var(--color-text-muted);">{{ artisan.craft_tradition }} ({{ artisan.loom_type }})</div>
+          </div>
+
+          <p style="font-size: 0.86rem; color: var(--color-text-muted); line-height: 1.6; margin-bottom: 1.25rem; flex: 1;">
+            {{ artisan.bio }}
+          </p>
+
+          <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1.25rem;">
+            {% for cert in artisan.certifications %}
+              <span class="badge-gi" style="font-size: 0.7rem;">✓ {{ cert }}</span>
+            {% endfor %}
+          </div>
+
+          <div style="display: flex; gap: 0.75rem; border-top: 1px solid var(--color-silk-border); padding-top: 1rem;">
+            <a href="/?craft={{ artisan.craft_tradition.split(' ')[0] }}" class="btn btn-secondary btn-sm" style="flex: 1;">
+              View Creations ({{ artisan.total_products }})
+            </a>
+            <button class="btn btn-primary btn-sm" onclick="ThariApp.openInquiryModal('', '{{ artisan.id }}', '{{ artisan.full_name }}')">
+              💬 Direct Message
+            </button>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

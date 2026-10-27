@@ -1,0 +1,68 @@
+[
+  {
+    "order_id": "ORD-2026-8801",
+    "customer_name": "Aarav Sharma",
+    "customer_email": "aarav.sharma@example.com",
+    "customer_phone": "+91 98112 34567",
+    "shipping_address": {
+      "street": "Flat 402, Nilgiri Heights, Indiranagar",
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "pincode": "560038",
+      "country": "India"
+    },
+    "items": [
+      {
+        "product_id": "prod-001",
+        "title": "Royal Midnight Chanderi Silk-Cotton Saree with Gold Ashrafi Zari",
+        "quantity": 1,
+        "unit_price_inr": 12800,
+        "artisan_id": "art-001",
+        "artisan_share_inr": 10496
+      }
+    ],
+    "subtotal_inr": 12800,
+    "shipping_fee_inr": 0,
+    "total_inr": 12800,
+    "total_artisan_direct_payout_inr": 10496,
+    "payment_status": "PAID",
+    "payment_method": "UPI / Direct Weaver Escrow",
+    "order_status": "SHIPPED",
+    "tracking_number": "INDPOST-7749210",
+    "created_at": "2026-10-24T10:15:30Z",
+    "weavers_note": "Hand-folded with love by Devendra Kumar Ansari. Includes certificate of authenticity."
+  },
+  {
+    "order_id": "ORD-2026-8802",
+    "customer_name": "Dr. Priya Sundaram",
+    "customer_email": "priya.sundaram@example.com",
+    "customer_phone": "+91 94441 56789",
+    "shipping_address": {
+      "street": "12 Besant Avenue, Adyar",
+      "city": "Chennai",
+      "state": "Tamil Nadu",
+      "pincode": "600020",
+      "country": "India"
+    },
+    "items": [
+      {
+        "product_id": "prod-003",
+        "title": "Featherlight Jamdani Fine Muslin Cotton Dupatta with Floral Butis",
+        "quantity": 2,
+        "unit_price_inr": 4850,
+        "artisan_id": "art-003",
+        "artisan_share_inr": 7760
+      }
+    ],
+    "subtotal_inr": 9700,
+    "shipping_fee_inr": 0,
+    "total_inr": 9700,
+    "total_artisan_direct_payout_inr": 7760,
+    "payment_status": "PAID",
+    "payment_method": "NetBanking",
+    "order_status": "DELIVERED",
+    "tracking_number": "BLUEDART-8839102",
+    "created_at": "2026-10-20T14:22:10Z",
+    "weavers_note": "Pure organic cotton handloom muslin crafted in Nadia, West Bengal."
+  }
+]
